@@ -28,24 +28,21 @@
 #include <Cabana_Core.hpp>
 #include <Kokkos_Core.hpp>
 
-// #include <CabanaNewPkg_Integrate.hpp>
-#include <CabanaNewPkg_Particles.hpp>
+#include <CabanaNewPkg.hpp>
 
 namespace Test
 {
 //---------------------------------------------------------------------------//
-void testIntegratorReversibility( int steps )
+void testParticlesCreation( int steps )
 {
     using exec_space = TEST_EXECSPACE;
+    using memory_space = typename exec_space::memory_space;
 
-    // std::array<double, 3> box_min = { -1.0, -1.0, -1.0 };
-    // std::array<double, 3> box_max = { 1.0, 1.0, 1.0 };
-    // std::array<int, 3> num_cells = { 10, 10, 10 };
-
-    // CabanaNewPkg::Particles<TEST_MEMSPACE>
-    //     particles( exec_space(), box_min, box_max, num_cells, 0 );
-    // auto x = particles.sliceReferencePosition();
-    // std::size_t num_particle = x.size();
+    auto particles = std::make_shared<
+      CabanaNewPkg::Particles<memory_space, DIM>>(exec_space(), 1, "test_integrator");
+    particles->resize(20);
+    auto x_p = particles->slicePosition();
+    EXPECT_DOUBLE_EQ(20, x_p.size());
 }
 
 //---------------------------------------------------------------------------//
@@ -53,7 +50,7 @@ void testIntegratorReversibility( int steps )
 //---------------------------------------------------------------------------//
 TEST( TEST_CATEGORY, test_integrate_reversibility )
 {
-    testIntegratorReversibility( 100 );
+    testParticlesCreation( 100 );
 }
 
 //---------------------------------------------------------------------------//

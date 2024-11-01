@@ -1,5 +1,5 @@
-#ifndef CabanaDEMParticles_HPP
-#define CabanaDEMParticles_HPP
+#ifndef CabanaNewPkgParticles_HPP
+#define CabanaNewPkgParticles_HPP
 
 #include <memory>
 #include <filesystem> // or #include <filesystem> for C++17 and up
@@ -17,7 +17,7 @@ namespace fs = std::filesystem;
 
 #define DIM 3
 
-namespace CabanaDEM
+namespace CabanaNewPkg
 {
   template <class MemorySpace, int Dimension>
   class Particles

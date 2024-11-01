@@ -2,7 +2,7 @@
 ##--------------------------------------------------------------------------##
 macro(cabanaNewPkg_add_tests)
   cmake_parse_arguments(cabanaNewPkg_UNIT_TEST "MPI" "" "NAMES" ${ARGN})
-  set(cabanaNewPkg_UNIT_TEST_MPIEXEC_NUMPROCS 1)
+  set(cabananewpkg_UNIT_TEST_MPIEXEC_NUMPROCS 1)
   if(cabanaNewPkg_UNIT_TEST_MPI)
     list(APPEND cabanaNewPkg_UNIT_TEST_MPIEXEC_NUMPROCS 2)
     if(MPIEXEC_MAX_NUMPROCS GREATER 1)
@@ -27,7 +27,7 @@ macro(cabanaNewPkg_add_tests)
         set(_target ${_test}_test_${_uppercase_device})
         add_executable(${_target} ${_file} ${cabanaNewPkg_UNIT_TEST_MAIN})
         target_include_directories(${_target} PRIVATE ${_dir} ${CMAKE_CURRENT_SOURCE_DIR})
-        target_link_libraries(${_target} PRIVATE cabanaNewPkg ${gtest_target} cabanaNewPkg)
+        target_link_libraries(${_target} PRIVATE cabananewpkg ${gtest_target} cabananewpkg)
 
         foreach(_np ${cabanaNewPkg_UNIT_TEST_MPIEXEC_NUMPROCS})
           if(_device STREQUAL PTHREAD OR _device STREQUAL OPENMP)
@@ -47,7 +47,4 @@ macro(cabanaNewPkg_add_tests)
   endforeach()
 endmacro()
 
-cabanaNewPkg_add_tests(NAMES Integrator)
-
-# TODO:
-#CabanaNewPkg_add_tests(MPI NAMES Comm)
+CabanaNewPkg_add_tests(NAMES ParticlesCreation)

@@ -9,19 +9,19 @@ set(SOURCES
 
 install(FILES ${HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-add_library(cabanaNewPkg ${SOURCES})
+add_library(cabananewpkg ${SOURCES})
 
-target_link_libraries(cabanaNewPkg
+target_link_libraries(cabananewpkg
   Cabana::Core
   Cabana::Grid
   nlohmann_json::nlohmann_json
   )
 
-target_include_directories(cabanaNewPkg
+target_include_directories(cabananewpkg
   PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
   )
 
-install(TARGETS cabanaNewPkg LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(TARGETS cabananewpkg LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
