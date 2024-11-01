@@ -143,47 +143,6 @@ namespace CabanaNewPkg
       _rad.resize( n );
     }
 
-    void output(  const int output_step,
-                  const double output_time,
-                  const bool use_reference = true )
-    {
-      // _output_timer.start();
-
-#ifdef Cabana_ENABLE_HDF5
-      Cabana::Experimental::HDF5ParticleOutput::writeTimeStep(
-                                                              h5_config,
-                                                              _output_folder_name+"/particles",
-                                                              // "particles",
-                                                              MPI_COMM_WORLD,
-                                                              output_step,
-                                                              output_time,
-                                                              _no_of_particles,
-                                                              slicePosition(),
-                                                              sliceVelocity(),
-                                                              sliceForce(),
-                                                              sliceMass(),
-                                                              sliceRadius());
-      // #else
-      // #ifdef Cabana_ENABLE_SILO
-      //       Cabana::Grid::Experimental::SiloParticleOutput::
-      //        writePartialRangeTimeStep(
-      //                                  "particles", output_step, output_time,
-      //                                  _no_of_particles,
-      //                                  slicePosition(),
-      //                                  sliceVelocity(),
-      //                                  sliceAcceleration(),
-      //                                  sliceMass(),
-      //                                  sliceDensity(),
-      //                                  sliceRadius());
-#else
-      std::cout << "No particle output enabled.";
-      // log( std::cout, "No particle output enabled." );
-      // #endif
-#endif
-
-      // _output_timer.stop();
-    }
-
   private:
     int _no_of_particles;
     aosoa_vec_double_type _x;
@@ -197,9 +156,8 @@ namespace CabanaNewPkg
     Cabana::Experimental::HDF5ParticleOutput::HDF5Config h5_config;
 #endif
 
-    // Cabana::Experimental::HDF5ParticleOutput::HDF5Config h5_config;
   };
 
-} // namespace CabanaDEM
+} // namespace CabanaNewPkg
 
 #endif

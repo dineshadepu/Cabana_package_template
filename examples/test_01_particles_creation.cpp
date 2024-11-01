@@ -36,60 +36,6 @@ double ObliqueParticleWallDifferentAngles04()
   using exec_space = Kokkos::OpenMP;
   using memory_space = typename exec_space::memory_space;
 
-  // // ====================================================
-  // //                   Read inputs
-  // // ====================================================
-  // CabanaDEM::Inputs inputs( input_filename );
-  // // also decode some of the inputs
-  // char delimiter = '=';
-  // std::vector<std::string> result = CabanaDEM::splitString(incident_angle_input, delimiter);
-
-  // // double incident_angle = 20.;
-  // double incident_angle = std::atof(result[1].c_str());
-
-
-  // // ====================================================
-  // //                Material parameters
-  // // ====================================================
-  // // Particle material properties
-  // double rho_p_inp = inputs["particle_density"];
-  // double radius_p_inp = inputs["particle_radius"];
-  // double  E_p_inp = inputs["particle_youngs_modulus"];
-  // double G_p_inp = inputs["particle_shear_modulus"];
-  // double nu_p_inp = inputs["particle_poissons_ratio"];
-  // // Wall material properties
-  // double  E_w_inp = inputs["wall_youngs_modulus"];
-  // double G_w_inp = inputs["wall_shear_modulus"];
-  // double nu_w_inp = inputs["wall_poissons_ratio"];
-  // // Coefficient of restitution among the interacting bodies
-  // double cor_pp_inp = inputs["coefficient_of_restitution_pp"];
-  // double cor_pw_inp = inputs["coefficient_of_restitution_pw"];
-  // // friction among the interacting bodies
-  // double friction_pp_inp = inputs["friction_pp"];
-  // double friction_pw_inp = inputs["friction_pw"];
-
-  // // ====================================================
-  // //                Geometric properties
-  // // ====================================================
-  // double velocity_p_inp = inputs["velocity_p"];
-
-  // // ====================================================
-  // //                  Discretization
-  // // ====================================================
-  // // FIXME: set halo width based on delta
-  // std::array<double, 3> low_corner = inputs["low_corner"];
-  // std::array<double, 3> high_corner = inputs["high_corner"];
-  // std::array<int, 3> num_cells = inputs["num_cells"];
-  // int m = std::floor( delta /
-  //                     ( ( high_corner[0] - low_corner[0] ) / num_cells[0] ) );
-  // int halo_width = m + 1; // Just to be safe.
-
-  // // ====================================================
-  // //  Force model
-  // // ====================================================
-  // auto force = std::make_shared<
-  //   CabanaDEM::Force<exec_space>>(cor_pp_inp, cor_pw_inp,
-  //                                 friction_pp_inp, friction_pw_inp);
 
   // ====================================================
   //                 Particle generation
@@ -105,13 +51,8 @@ double ObliqueParticleWallDifferentAngles04()
   auto u_p = particles->sliceVelocity();
   auto m_p = particles->sliceMass();
   auto rad_p = particles->sliceRadius();
-  // std::cout << &u_p << std::endl;
 
-  // double angle = incident_angle / 180. * M_PI;
   double radius_p_inp = 0.1;
-
-  // double ux_p_inp = velocity_p_inp * sin(angle);
-  // double uy_p_inp = -velocity_p_inp * cos(angle);
 
   auto particles_init_functor = KOKKOS_LAMBDA( const int pid )
     {
