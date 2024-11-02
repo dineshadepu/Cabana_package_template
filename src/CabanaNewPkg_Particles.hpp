@@ -39,29 +39,14 @@ namespace CabanaNewPkg
     using aosoa_vec_double_type = Cabana::AoSoA<vec_double_type, memory_space, 1>;
     using aosoa_vec_int_type = Cabana::AoSoA<vec_int_type, memory_space, 1>;
 
-    std::array<double, DIM> mesh_lo;
-    std::array<double, DIM> mesh_hi;
-
     // Constructor which initializes particles on regular grid.
     template <class ExecSpace>
-    Particles( const ExecSpace& exec_space, std::size_t no_of_particles, std::string output_folder_name )
+    Particles( const ExecSpace& exec_space, std::size_t no_of_particles)
     {
       _no_of_particles = no_of_particles;
-      _output_folder_name = output_folder_name;
-      // create the output folder if it doesn't exist
-
-      if (!fs::is_directory(_output_folder_name) || !fs::exists(_output_folder_name)) { // Check if src folder exists
-        fs::create_directory(_output_folder_name); // create src folder
-      }
 
       resize( _no_of_particles );
       createParticles( exec_space );
-      // Set dummy values here, reset them in particular examples
-      for ( int d = 0; d < dim; d++ )
-        {
-          mesh_lo[d] = 0.0;
-          mesh_hi[d] = 0.0;
-        }
     }
 
     // Constructor which initializes particles on regular grid.
@@ -133,6 +118,14 @@ namespace CabanaNewPkg
       return Cabana::slice<0>( _rad, "radius" );
     }
 
+    auto sliceStiffness() {
+      return Cabana::slice<0>( _rad, "stiffness" );
+    }
+    auto sliceStiffness() const
+    {
+      return Cabana::slice<0>( _rad, "stiffness" );
+    }
+
     void resize(const std::size_t n)
     {
       _no_of_particles = n;
@@ -141,6 +134,7 @@ namespace CabanaNewPkg
       _force.resize( n );
       _m.resize( n );
       _rad.resize( n );
+      _k.resize( n );
     }
 
   private:
@@ -149,15 +143,10 @@ namespace CabanaNewPkg
     aosoa_vec_double_type _u;
     aosoa_vec_double_type _force;
     aosoa_double_type _m;
+    aosoa_double_type _k;
     aosoa_double_type _rad;
-    std::string _output_folder_name;
-
-#ifdef Cabana_ENABLE_HDF5
-    Cabana::Experimental::HDF5ParticleOutput::HDF5Config h5_config;
-#endif
-
   };
 
-} // namespace CabanaNewPkg
+}
 
 #endif

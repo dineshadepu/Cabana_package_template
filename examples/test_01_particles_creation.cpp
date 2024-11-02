@@ -19,7 +19,7 @@
 
 
 // Simulate two spherical particles colliding head on
-double ObliqueParticleWallDifferentAngles04()
+double CreateParticles()
 {
   int comm_rank = -1;
   MPI_Comm_rank( MPI_COMM_WORLD, &comm_rank );
@@ -40,9 +40,8 @@ double ObliqueParticleWallDifferentAngles04()
   // ====================================================
   //                 Particle generation
   // ====================================================
-  // Does not set displacements, velocities, etc.
   auto particles = std::make_shared<
-    CabanaNewPkg::Particles<memory_space, DIM>>(exec_space(), 1, "tmp");
+    CabanaNewPkg::Particles<memory_space, DIM>>(exec_space(), 1);
 
   // ====================================================
   //            Custom particle initialization
@@ -51,8 +50,10 @@ double ObliqueParticleWallDifferentAngles04()
   auto u_p = particles->sliceVelocity();
   auto m_p = particles->sliceMass();
   auto rad_p = particles->sliceRadius();
+  auto k_p = particles->sliceRadius();
 
   double radius_p_inp = 0.1;
+  double k_p_inp = 1e5;
 
   auto particles_init_functor = KOKKOS_LAMBDA( const int pid )
     {
@@ -67,6 +68,7 @@ double ObliqueParticleWallDifferentAngles04()
       u_p( pid, 2 ) = 0.0;
 
       m_p( pid ) = m_p_i;
+      k_p( pid ) = k_p_inp;
       rad_p( pid ) = radius_p_inp;
     };
   particles->updateParticles( exec_space{}, particles_init_functor );
@@ -75,7 +77,6 @@ double ObliqueParticleWallDifferentAngles04()
 
   auto x_p_20 = particles->slicePosition();
   auto u_p_20 = particles->sliceVelocity();
-  // std::cout << "u_p 20 is " << &u_p_20 << std::endl;
 
   for (int i=0; i < u_p_20.size(); i++){
     x_p_20( i, 0 ) = 0.;
@@ -96,7 +97,7 @@ int main( int argc, char* argv[] )
 {
   MPI_Init( &argc, &argv );
   Kokkos::initialize( argc, argv );
-  ObliqueParticleWallDifferentAngles04();
+  CreateParticles();
 
   Kokkos::finalize();
   MPI_Finalize();

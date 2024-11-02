@@ -39,7 +39,7 @@ void testParticlesCreation( int steps )
     using memory_space = typename exec_space::memory_space;
 
     auto particles = std::make_shared<
-      CabanaNewPkg::Particles<memory_space, DIM>>(exec_space(), 1, "test_integrator");
+      CabanaNewPkg::Particles<memory_space, DIM>>(exec_space(), 1);
     particles->resize(20);
     auto x_p = particles->slicePosition();
     EXPECT_DOUBLE_EQ(20, x_p.size());
