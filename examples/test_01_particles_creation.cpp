@@ -88,6 +88,10 @@ double CreateParticles()
     u_p_20( i, 2 ) = 0.;
   }
 
+  // Set output folder
+  particles->set_output_folder("test_01_particles_creation_output");
+  particles->output(0, 0);
+
   return 0;
 
 }

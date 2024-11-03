@@ -33,7 +33,7 @@
 namespace Test
 {
 //---------------------------------------------------------------------------//
-void testParticlesCreation( int steps )
+void testParticlesCreation()
 {
     using exec_space = TEST_EXECSPACE;
     using memory_space = typename exec_space::memory_space;
@@ -45,12 +45,83 @@ void testParticlesCreation( int steps )
     EXPECT_DOUBLE_EQ(20, x_p.size());
 }
 
+
+void testParticlesOutputFolderCreationFromInitializer()
+{
+    using exec_space = TEST_EXECSPACE;
+    using memory_space = typename exec_space::memory_space;
+
+    auto particles = std::make_shared<
+      CabanaNewPkg::Particles<memory_space, DIM>>(exec_space(), 1,
+                                                  "test_particles_output_folder_creation_output");
+
+    EXPECT_EQ(fs::exists("test_particles_output_folder_creation_output"), true);
+    EXPECT_EQ(fs::is_directory("test_particles_output_folder_creation_output"), true);
+
+    if (fs::exists("test_particles_output_folder_creation_output")) {
+      // Delete the folder and all its contents
+      fs::remove_all("test_particles_output_folder_creation_output");
+    }
+}
+
+
+void testParticlesOutputFolderCreationFromSetOutputFolder()
+{
+    using exec_space = TEST_EXECSPACE;
+    using memory_space = typename exec_space::memory_space;
+
+    auto particles = std::make_shared<
+      CabanaNewPkg::Particles<memory_space, DIM>>(exec_space(), 1);
+    particles->set_output_folder("test_particles_output_folder_creation_2_output");
+
+    EXPECT_EQ(fs::exists("test_particles_output_folder_creation_2_output"), true);
+    EXPECT_EQ(fs::is_directory("test_particles_output_folder_creation_2_output"), true);
+
+    if (fs::exists("test_particles_output_folder_creation_2_output")) {
+      // Delete the folder and all its contents
+      fs::remove_all("test_particles_output_folder_creation_2_output");
+    }
+}
+
+
+void testParticlesHdfFile()
+{
+    using exec_space = TEST_EXECSPACE;
+    using memory_space = typename exec_space::memory_space;
+
+    auto particles = std::make_shared<
+      CabanaNewPkg::Particles<memory_space, DIM>>(exec_space(), 1);
+    particles->set_output_folder("test_particles_output_folder_creation_3_output");
+    particles->output(0, 0)
+
+    EXPECT_EQ(fs::exists("test_particles_output_folder_creation_3_output/particles_0.h5"), true);
+    // EXPECT_EQ(fs::is_directory("test_particles_output_folder_creation_2_output"), true);
+
+
+    if (fs::exists("test_particles_output_folder_creation_3_output")) {
+      // Delete the folder and all its contents
+      fs::remove_all("test_particles_output_folder_creation_3_output");
+    }
+}
+
 //---------------------------------------------------------------------------//
 // TESTS
 //---------------------------------------------------------------------------//
-TEST( TEST_CATEGORY, test_integrate_reversibility )
+TEST( TEST_CATEGORY, test_particles_creation )
 {
-    testParticlesCreation( 100 );
+    testParticlesCreation();
+}
+
+TEST( TEST_CATEGORY, test_particles_output_folder_creation_methods )
+{
+    testParticlesOutputFolderCreationFromInitializer();
+    testParticlesOutputFolderCreationFromSetOutputFolder();
+}
+
+
+TEST( TEST_CATEGORY, test_particles_output_hdf_file )
+{
+  testParticlesHdfFile();
 }
 
 //---------------------------------------------------------------------------//

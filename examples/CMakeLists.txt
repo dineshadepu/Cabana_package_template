@@ -1,7 +1,7 @@
-add_executable(Tst01ParticlesCreation test_01_particles_creation.cpp)
-target_link_libraries(Tst01ParticlesCreation PRIVATE cabananewpkg)
+add_executable(Test01ParticlesCreation test_01_particles_creation.cpp)
+target_link_libraries(Test01ParticlesCreation PRIVATE cabananewpkg)
 
-install(TARGETS Tst01ParticlesCreation
+install(TARGETS Test01ParticlesCreation
   DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 
