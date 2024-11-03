@@ -92,7 +92,7 @@ void testParticlesHdfFile()
     auto particles = std::make_shared<
       CabanaNewPkg::Particles<memory_space, DIM>>(exec_space(), 1);
     particles->set_output_folder("test_particles_output_folder_creation_3_output");
-    particles->output(0, 0)
+    particles->output(0, 0);
 
     EXPECT_EQ(fs::exists("test_particles_output_folder_creation_3_output/particles_0.h5"), true);
     // EXPECT_EQ(fs::is_directory("test_particles_output_folder_creation_2_output"), true);
