@@ -77,18 +77,32 @@ double ComputeNeighbours()
                        Cabana::TeamOpTag>;
 
   auto positions = particles->slicePosition();
+  auto forces = particles->sliceForce();
   ListType verlet_list( positions, 0, positions.size(), neighborhood_radius,
                         cell_ratio, grid_min, grid_max );
 
-  for ( std::size_t i = 0; i < positions.size(); ++i )
+  auto first_neighbor_kernel = KOKKOS_LAMBDA( const int i, const int j )
     {
-      int num_n = Cabana::NeighborList<ListType>::numNeighbor( verlet_list, i );
-      std::cout << "Particle " << i << " # neighbor = " << num_n << std::endl;
-      for ( int j = 0; j < num_n; ++j )
-        std::cout << "    neighbor " << j << " = "
-                  << Cabana::NeighborList<ListType>::getNeighbor(verlet_list, i, j )
-                  << std::endl;
-    }
+
+      auto dx = positions( i, 0 ) - positions( j, 0 );
+      auto dy = positions( i, 0 ) - positions( j, 0 );
+      auto dz = positions( i, 0 ) - positions( j, 0 );
+      auto dist = sqrt(dx*dx + dy*dz + dz*dz);
+      forces (i, 0) += 1;
+    };
+
+  Kokkos::RangePolicy<exec_space> policy( 0, positions.size() );
+
+  Cabana::neighbor_parallel_for( policy, first_neighbor_kernel, verlet_list,
+                                 Cabana::FirstNeighborsTag(),
+                                 Cabana::SerialOpTag(), "ex_1st_serial" );
+  Kokkos::fence();
+
+  std::cout << "Cabana::neighbor_parallel_for results (first, serial)"
+            << std::endl;
+  for ( std::size_t i = 0; i < positions.size(); i++ )
+    std::cout << forces( i, 0 ) << " ";
+  std::cout << std::endl << std::endl;
 
   return 0;
 }

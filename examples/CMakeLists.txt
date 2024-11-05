@@ -6,7 +6,12 @@ add_executable(Test02ComputeNeighbours test_02_compute_neighbours.cpp)
 target_link_libraries(Test02ComputeNeighbours PRIVATE cabananewpkg)
 
 
+add_executable(Test03ForceComputation test_03_force_computation.cpp)
+target_link_libraries(Test03ForceComputation PRIVATE cabananewpkg)
+
+
 install(TARGETS Test01ParticlesCreation Test02ComputeNeighbours
+  Test03ForceComputation
   DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 
