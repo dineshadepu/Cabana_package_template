@@ -71,38 +71,39 @@ double ComputeNeighbours()
   double neighborhood_radius = 0.1005;
   double cell_ratio = 1.0;
   using ListAlgorithm = Cabana::FullNeighborTag;
-  using ListType =
-    Cabana::VerletList<memory_space, ListAlgorithm,
-                       Cabana::VerletLayoutCSR,
-                       Cabana::TeamOpTag>;
+  using ListType = Cabana::VerletList<memory_space, ListAlgorithm,
+                                      Cabana::VerletLayoutCSR,
+                                      Cabana::TeamOpTag>;
 
   auto positions = particles->slicePosition();
-  auto forces = particles->sliceForce();
-  ListType verlet_list( positions, 0, positions.size(), neighborhood_radius,
+  auto verlet_list = std::make_shared<ListType>( positions, 0, positions.size(), neighborhood_radius,
                         cell_ratio, grid_min, grid_max );
 
-  auto first_neighbor_kernel = KOKKOS_LAMBDA( const int i, const int j )
-    {
+  // create the accelerations object
+  auto vel_acc = std::make_shared<CabanaNewPkg::VelocityAccelerations<exec_space>>( 0.1, 0.2 );
 
-      auto dx = positions( i, 0 ) - positions( j, 0 );
-      auto dy = positions( i, 0 ) - positions( j, 0 );
-      auto dz = positions( i, 0 ) - positions( j, 0 );
-      auto dist = sqrt(dx*dx + dy*dz + dz*dz);
-      forces (i, 0) += 1;
-    };
 
-  Kokkos::RangePolicy<exec_space> policy( 0, positions.size() );
+  auto x = particles->slicePosition();
+  auto u = particles->sliceVelocity();
+  auto force = particles->sliceForce();
+  auto m = particles->sliceMass();
+  auto rad = particles->sliceRadius();
+  auto k = particles->sliceStiffness();
 
-  Cabana::neighbor_parallel_for( policy, first_neighbor_kernel, verlet_list,
-                                 Cabana::FirstNeighborsTag(),
-                                 Cabana::SerialOpTag(), "ex_1st_serial" );
-  Kokkos::fence();
+  Cabana::deep_copy( force, 10. );
+  Cabana::deep_copy( m, 1. );
+  Cabana::deep_copy( rad, 0.1 );
+  Cabana::deep_copy( k, 100. );
+  for (int i=0; i < positions.size(); i++){
+    std::cout << force ( i, 0 ) << ", " << force ( i, 1 ) << ", " << force ( i, 2 ) << "\n";
+  }
+  // now compute the forces
+  vel_acc->makeForceTorqueZeroOnParticle(*particles);
+  CabanaNewPkg::computeForceParticleParticle(*vel_acc, *particles, *verlet_list);
 
-  std::cout << "Cabana::neighbor_parallel_for results (first, serial)"
-            << std::endl;
-  for ( std::size_t i = 0; i < positions.size(); i++ )
-    std::cout << forces( i, 0 ) << " ";
-  std::cout << std::endl << std::endl;
+  for (int i=0; i < positions.size(); i++){
+    std::cout << force ( i, 0 ) << ", " << force ( i, 1 ) << ", " << force ( i, 2 ) << "\n";
+  }
 
   return 0;
 }

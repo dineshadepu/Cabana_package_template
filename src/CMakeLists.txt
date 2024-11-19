@@ -1,5 +1,6 @@
 set(HEADERS
   CabanaNewPkg_Particles.hpp
+  CabanaNewPkg_Velocity_Accelerations.hpp
   CabanaNewPkg.hpp
   )
 

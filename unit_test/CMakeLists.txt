@@ -47,4 +47,4 @@ macro(cabanaNewPkg_add_tests)
   endforeach()
 endmacro()
 
-CabanaNewPkg_add_tests(NAMES ParticlesCreation)
+CabanaNewPkg_add_tests(NAMES ParticlesCreation VelocityAccelerations)
