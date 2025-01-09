@@ -155,12 +155,73 @@ namespace CabanaNewPkg
   /******************************************************************************
   Force functions
   ******************************************************************************/
+
   template <class AccelerationType, class ParticleType, class NeighListType>
   void computeForceParticleParticle( AccelerationType& accelerations, ParticleType& particles,
                                      const NeighListType& neigh_list)
   {
     accelerations.makeForceTorqueZeroOnParticle( particles );
     accelerations.computeForceFullParticleParticle( particles, neigh_list );
+  }
+
+  // template <class ParticleType, class NeighListType, class ExecutionSpace>
+  template <class ParticleType, class NeighListType>
+  void testNestedLoopEquation(ParticleType& particles, const NeighListType& neigh_list,
+                              double neighbour_radius)
+  {
+      auto x = particles.slicePosition();
+      auto rad = particles.sliceRadius();
+
+      auto force_full = KOKKOS_LAMBDA( const int i, const int j )
+        {
+          /*
+            Common to all equations in SPH.
+
+            We compute:
+            1.the vector passing from j to i
+            2. Distance between the points i and j
+            3. Distance square between the points i and j
+            4. Velocity vector difference between i and j
+            5. Kernel value
+            6. Derivative of kernel value
+          */
+          double pos_i[3] = {x( i, 0 ),
+            x( i, 1 ),
+            x( i, 2 )};
+
+          double pos_j[3] = {x( j, 0 ),
+            x( j, 1 ),
+            x( j, 2 )};
+
+          double pos_ij[3] = {x( i, 0 ) - x( j, 0 ),
+            x( i, 1 ) - x( j, 1 ),
+            x( i, 2 ) - x( j, 2 )};
+
+          // squared distance
+          double r2ij = pos_ij[0] * pos_ij[0] + pos_ij[1] * pos_ij[1] + pos_ij[2] * pos_ij[2];
+          // distance between i and j
+          double rij = sqrt(r2ij);
+          /*
+            ====================================
+            End: common to all equations in SPH.
+            ====================================
+          */
+          // find the force if the particles are overlapping
+
+          if (rij < neighbour_radius) {
+            rad( i ) += 1.;
+          }
+        };
+
+      Kokkos::RangePolicy<Kokkos::OpenMP> policy(0, x.size());
+
+      Cabana::neighbor_parallel_for( policy,
+                                     force_full,
+                                     neigh_list,
+                                     Cabana::FirstNeighborsTag(),
+                                     Cabana::SerialOpTag(),
+                                     "CabanaDEM::ForceFull" );
+      Kokkos::fence();
   }
 }
 

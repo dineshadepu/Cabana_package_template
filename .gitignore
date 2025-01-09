@@ -25,6 +25,8 @@ manuscript/auto/
 code/results/
 manuscript/*.pdf
 build_cpu/
+*.h5
+*.xmf
 
 
 *.pyc

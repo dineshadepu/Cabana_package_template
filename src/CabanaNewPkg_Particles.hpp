@@ -176,8 +176,8 @@ namespace CabanaNewPkg
 #ifdef Cabana_ENABLE_HDF5
       Cabana::Experimental::HDF5ParticleOutput::writeTimeStep(
                                                               h5_config,
-                                                              _output_folder_name+"/particles",
-                                                              // "particles",
+                                                              // _output_folder_name+"/particles",
+                                                              "particles",
                                                               MPI_COMM_WORLD,
                                                               output_step,
                                                               output_time,

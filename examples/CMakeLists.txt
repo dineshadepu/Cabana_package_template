@@ -21,6 +21,12 @@ target_link_libraries(Grid03 PRIVATE cabananewpkg)
 add_executable(Grid04 learn_cabana_grid_04_global_grid_example.cpp)
 target_link_libraries(Grid04 PRIVATE cabananewpkg)
 
+add_executable(Grid05 learn_cabana_grid_05_index_space_example.cpp)
+target_link_libraries(Grid05 PRIVATE cabananewpkg)
+
+add_executable(TestComparePython01NestedLoop test_compare_python_01_nested_for_loop.cpp)
+target_link_libraries(TestComparePython01NestedLoop PRIVATE cabananewpkg)
+
 
 install(TARGETS Test01ParticlesCreation Test02ComputeNeighbours
   Test03ComputeVelocityAccelerations
@@ -28,6 +34,8 @@ install(TARGETS Test01ParticlesCreation Test02ComputeNeighbours
   Grid02
   Grid03
   Grid04
+  Grid05
+  TestComparePython01NestedLoop
   DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 
