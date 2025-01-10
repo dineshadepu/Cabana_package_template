@@ -150,11 +150,50 @@ class Test01NestedForLoopCabana(Problem):
         np.testing.assert_almost_equal(cabana_radius, python_sum)
 
 
+class Test02SerialForLoopCabana(Problem):
+    def get_name(self):
+        return 'test02_serial_for_loop_cabana'
+
+    def setup(self):
+        get_path = self.input_path
+
+        # cmd = './build/examples/TestComparePython01NestedLoop $output_dir'
+        cmd = 'python examples/test_compare_python_02_serial_for_loop.py $output_dir'
+
+        # Base case info
+        self.case_info = {
+            'case_1': (dict(
+                ), 'Cabana'),
+        }
+
+        self.cases = [
+            Simulation(get_path(name), cmd,
+                       **scheme_opts(self.case_info[name][0]))
+            for name in self.case_info
+        ]
+
+    def run(self):
+        self.make_output_dir()
+        self.plot_time_vs_normal_force()
+
+    def plot_time_vs_normal_force(self):
+        # get total no of particles
+        cabana = h5py.File("outputs/test02_serial_for_loop_cabana/case_1/particles_0.h5", "r")
+        python = np.load("outputs/test02_serial_for_loop_cabana/case_1/results.npz", "r")
+        python_x = python['x']
+        python_y = python['y']
+
+        cabana_x = cabana['positions'][:, 0]
+        cabana_y = cabana['positions'][:, 1]
+        np.testing.assert_almost_equal(cabana_x, python_x)
+
+
 if __name__ == '__main__':
     PROBLEMS = [
         # Image generator
         Test01NestedForLoopPython,
         Test01NestedForLoopCabana,
+        Test02SerialForLoopCabana
         ]
 
     automator = Automator(

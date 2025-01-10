@@ -223,6 +223,26 @@ namespace CabanaNewPkg
                                      "CabanaDEM::ForceFull" );
       Kokkos::fence();
   }
+
+  // template <class ParticleType, class NeighListType, class ExecutionSpace>
+  template <class ParticleType, class NeighListType>
+  void testSerialLoopEquation(ParticleType& particles, const NeighListType& neigh_list,
+                              double neighbour_radius)
+  {
+      auto x = particles.slicePosition();
+      auto rad = particles.sliceRadius();
+
+      auto move_x = KOKKOS_LAMBDA( const int i )
+        {
+          x( i, 0 ) += 0.5;
+        };
+
+      Kokkos::RangePolicy<Kokkos::OpenMP> policy(0, x.size());
+
+      Kokkos::parallel_for( "CabanaNewPkg::MoveX", policy,
+                            move_x);
+  }
+
 }
 
 #endif

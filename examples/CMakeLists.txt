@@ -27,6 +27,9 @@ target_link_libraries(Grid05 PRIVATE cabananewpkg)
 add_executable(TestComparePython01NestedLoop test_compare_python_01_nested_for_loop.cpp)
 target_link_libraries(TestComparePython01NestedLoop PRIVATE cabananewpkg)
 
+add_executable(TestComparePython02SerialLoop test_compare_python_02_serial_for_loop.cpp)
+target_link_libraries(TestComparePython02SerialLoop PRIVATE cabananewpkg)
+
 
 install(TARGETS Test01ParticlesCreation Test02ComputeNeighbours
   Test03ComputeVelocityAccelerations
@@ -36,6 +39,7 @@ install(TARGETS Test01ParticlesCreation Test02ComputeNeighbours
   Grid04
   Grid05
   TestComparePython01NestedLoop
+  TestComparePython02SerialLoop
   DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 
