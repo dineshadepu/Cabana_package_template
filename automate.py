@@ -188,12 +188,53 @@ class Test02SerialForLoopCabana(Problem):
         np.testing.assert_almost_equal(cabana_x, python_x)
 
 
+class Test03ReduceCabana(Problem):
+    def get_name(self):
+        return 'test03_reduce_cabana'
+
+    def setup(self):
+        get_path = self.input_path
+
+        # cmd = './build/examples/TestComparePython01NestedLoop $output_dir'
+        cmd = 'python examples/test_compare_python_03_reduce.py $output_dir'
+
+        # Base case info
+        self.case_info = {
+            'case_1': (dict(
+                ), 'Cabana'),
+        }
+
+        self.cases = [
+            Simulation(get_path(name), cmd,
+                       **scheme_opts(self.case_info[name][0]))
+            for name in self.case_info
+        ]
+
+    def run(self):
+        self.make_output_dir()
+        self.plot_time_vs_normal_force()
+
+    def plot_time_vs_normal_force(self):
+        # get total no of particles
+        cabana = h5py.File("outputs/test03_reduce_cabana/case_1/particles_0.h5", "r")
+        python = np.load("outputs/test03_reduce_cabana/case_1/results.npz", "r")
+        cabana_reduce = np.loadtxt("outputs/test03_reduce_cabana/case_1/reduce_cpp.csv")
+        python_x = python['x']
+        python_y = python['y']
+        python_reduce = python['reduce_']
+
+        cabana_x = cabana['positions'][:, 0]
+        cabana_y = cabana['positions'][:, 1]
+        np.testing.assert_almost_equal(python_reduce[0], cabana_reduce.item())
+
+
 if __name__ == '__main__':
     PROBLEMS = [
         # Image generator
         Test01NestedForLoopPython,
         Test01NestedForLoopCabana,
-        Test02SerialForLoopCabana
+        Test02SerialForLoopCabana,
+        Test03ReduceCabana
         ]
 
     automator = Automator(

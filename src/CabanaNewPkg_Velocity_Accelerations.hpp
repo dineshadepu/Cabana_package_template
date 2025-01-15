@@ -226,6 +226,26 @@ namespace CabanaNewPkg
 
   // template <class ParticleType, class NeighListType, class ExecutionSpace>
   template <class ParticleType, class NeighListType>
+  void testReduceEquation(ParticleType& particles, const NeighListType& neigh_list,
+                          double neighbour_radius, double & reduce_)
+  {
+      auto x = particles.slicePosition();
+      auto rad = particles.sliceRadius();
+
+      auto reduce_op =
+        KOKKOS_LAMBDA( const std::size_t i, double& reduce_ )
+        {
+          reduce_ += rad( i );
+        };
+
+      Kokkos::RangePolicy<Kokkos::OpenMP> policy(0, x.size());
+
+      Kokkos::parallel_reduce("reduce_serial", policy, reduce_op, reduce_ );
+      Kokkos::fence();
+  }
+
+  // template <class ParticleType, class NeighListType, class ExecutionSpace>
+  template <class ParticleType, class NeighListType>
   void testSerialLoopEquation(ParticleType& particles, const NeighListType& neigh_list,
                               double neighbour_radius)
   {
