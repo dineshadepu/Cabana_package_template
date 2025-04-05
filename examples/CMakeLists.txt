@@ -36,8 +36,22 @@ target_link_libraries(TestComparePython03Reduce PRIVATE cabananewpkg)
 add_executable(Test04PolicyWithDecreasingLimits test_04_policy_with_decreasing_limits.cpp)
 target_link_libraries(Test04PolicyWithDecreasingLimits PRIVATE cabananewpkg)
 
+add_executable(Test05LearnHaloExchangeInCabana test_05_learn_halo_exchange_in_Cabana.cpp)
+target_link_libraries(Test05LearnHaloExchangeInCabana PRIVATE cabananewpkg)
 
-install(TARGETS Test01ParticlesCreation Test02ComputeNeighbours
+add_executable(Test06LearnNestedForLoopPeriodicBoundaries test_06_learn_nested_for_loop_periodic_boundaries.cpp)
+target_link_libraries(Test06LearnNestedForLoopPeriodicBoundaries PRIVATE cabananewpkg)
+
+add_executable(Test07KokkosViewVectorType test_07_kokkos_view_vector_type.cpp)
+target_link_libraries(Test07KokkosViewVectorType PRIVATE cabananewpkg)
+
+add_executable(Test08CallExternalLibrariesEigen3 test_08_call_external_libraries_eigen3.cpp)
+target_link_libraries(Test08CallExternalLibrariesEigen3 PRIVATE cabananewpkg)
+
+
+install(TARGETS
+  Test01ParticlesCreation
+  Test02ComputeNeighbours
   Test03ComputeVelocityAccelerations
   Grid01
   Grid02
@@ -48,6 +62,10 @@ install(TARGETS Test01ParticlesCreation Test02ComputeNeighbours
   TestComparePython02SerialLoop
   TestComparePython03Reduce
   Test04PolicyWithDecreasingLimits
+  Test05LearnHaloExchangeInCabana
+  Test06LearnNestedForLoopPeriodicBoundaries
+  Test07KokkosViewVectorType
+  Test08CallExternalLibrariesEigen3
   DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 

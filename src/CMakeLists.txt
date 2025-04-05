@@ -16,6 +16,7 @@ target_link_libraries(cabananewpkg
   Cabana::Core
   Cabana::Grid
   nlohmann_json::nlohmann_json
+  Eigen3::Eigen
   )
 
 target_include_directories(cabananewpkg

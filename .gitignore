@@ -47,3 +47,5 @@ dist/
 *.out
 *_output
 manuscript/figures/*.png
+book/
+*_step*.png
